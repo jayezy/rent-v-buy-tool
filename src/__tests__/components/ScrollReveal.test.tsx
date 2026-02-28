@@ -3,7 +3,7 @@
  * The global IntersectionObserver mock in test/setup.ts immediately triggers
  * visibility, so elements appear right away in tests.
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import ScrollReveal from '../../components/ui/ScrollReveal'
 
@@ -57,8 +57,11 @@ describe('ScrollReveal — with custom IO mock (hidden initially)', () => {
 
   beforeEach(() => {
     // Override the global mock with one that does NOT auto-trigger
-    savedIO = global.IntersectionObserver
-    global.IntersectionObserver = class NoOpObserver {
+    const g = globalThis as typeof globalThis & {
+      IntersectionObserver: typeof IntersectionObserver
+    }
+    savedIO = g.IntersectionObserver
+    g.IntersectionObserver = class NoOpObserver {
       observe() {}
       disconnect() {}
       unobserve() {}
@@ -71,7 +74,7 @@ describe('ScrollReveal — with custom IO mock (hidden initially)', () => {
 
   // Restore after
   afterEach(() => {
-    global.IntersectionObserver = savedIO
+    ;(globalThis as any).IntersectionObserver = savedIO
   })
 
   it('starts with opacity-0 when observer has not fired', () => {

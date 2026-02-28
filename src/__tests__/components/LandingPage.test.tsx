@@ -2,7 +2,7 @@
  * Tests for LandingPage component.
  * Verifies the hero content, stat cards, CTA buttons, and navigation dispatch.
  */
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import LandingPage from '../../components/landing/LandingPage'
