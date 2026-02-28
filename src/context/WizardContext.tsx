@@ -15,6 +15,7 @@ type WizardAction =
   | { type: 'SET_ANSWER'; questionId: keyof WizardAnswers; value: number | string }
   | { type: 'GO_BACK' }
   | { type: 'GO_TO_WIZARD' }
+  | { type: 'GO_TO_LANDING' }
   | { type: 'UPDATE_ASSUMPTIONS'; overrides: Partial<AssumptionOverrides> }
   | { type: 'CLEAR_ASSUMPTIONS' }
   | { type: 'RESET' }
@@ -47,6 +48,8 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
       }
     case 'GO_TO_WIZARD':
       return { ...state, view: 'wizard' }
+    case 'GO_TO_LANDING':
+      return { ...state, view: 'landing' }
     case 'UPDATE_ASSUMPTIONS': {
       const newOverrides = { ...state.assumptionOverrides, ...action.overrides }
       // Recalculate results if we already have them

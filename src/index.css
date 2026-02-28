@@ -2,15 +2,15 @@
 
 @theme {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --color-primary: #2563eb;
-  --color-primary-light: #3b82f6;
-  --color-primary-dark: #1d4ed8;
-  --color-rent: #ef4444;
-  --color-rent-light: #fca5a5;
-  --color-buy: #2563eb;
-  --color-buy-light: #93c5fd;
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
+  --color-primary: #8b5cf6;
+  --color-primary-light: #a78bfa;
+  --color-primary-dark: #7c3aed;
+  --color-rent: #f472b6;
+  --color-rent-light: #fbcfe8;
+  --color-buy: #818cf8;
+  --color-buy-light: #c7d2fe;
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
 }
 
 html {
@@ -32,9 +32,55 @@ html {
   }
 }
 
+/* Animated background blobs */
+@keyframes blob-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -50px) scale(1.1); }
+  50% { transform: translate(-20px, 20px) scale(0.95); }
+  75% { transform: translate(40px, 30px) scale(1.05); }
+}
+
+@keyframes blob-drift-reverse {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(-40px, 30px) scale(1.05); }
+  50% { transform: translate(30px, -20px) scale(1.1); }
+  75% { transform: translate(-20px, -40px) scale(0.95); }
+}
+
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(8px); opacity: 1; }
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.blob-1 { animation: blob-drift 20s ease-in-out infinite; }
+.blob-2 { animation: blob-drift-reverse 25s ease-in-out infinite; }
+.blob-3 { animation: blob-drift 30s ease-in-out infinite; }
+
+.glass {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob-1, .blob-2, .blob-3 {
+    animation: none;
+  }
+}
+
 body {
   font-family: var(--font-sans);
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  background: linear-gradient(135deg, #fff1f2 0%, #faf5ff 50%, #f0f9ff 100%);
   min-height: 100vh;
   margin: 0;
 }

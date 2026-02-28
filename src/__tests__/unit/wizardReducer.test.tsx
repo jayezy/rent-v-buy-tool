@@ -132,6 +132,41 @@ describe('WizardContext — RESET action', () => {
   })
 })
 
+describe('WizardContext — GO_TO_LANDING action', () => {
+  it('switches view to landing', () => {
+    const { result } = renderHook(() => useWizard(), { wrapper })
+    act(() => {
+      result.current.dispatch({ type: 'GO_TO_WIZARD' })
+    })
+    expect(result.current.state.view).toBe('wizard')
+    act(() => {
+      result.current.dispatch({ type: 'GO_TO_LANDING' })
+    })
+    expect(result.current.state.view).toBe('landing')
+  })
+
+  it('preserves current step when returning to landing', () => {
+    const { result } = renderHook(() => useWizard(), { wrapper })
+    act(() => {
+      result.current.dispatch({ type: 'GO_TO_WIZARD' })
+    })
+    act(() => {
+      result.current.dispatch({ type: 'SET_ANSWER', questionId: 'annualIncome', value: 87500 })
+    })
+    act(() => {
+      result.current.dispatch({ type: 'SET_ANSWER', questionId: 'monthlyBudget', value: 3000 })
+    })
+    expect(result.current.state.currentStep).toBe(2)
+    act(() => {
+      result.current.dispatch({ type: 'GO_TO_LANDING' })
+    })
+    expect(result.current.state.view).toBe('landing')
+    expect(result.current.state.currentStep).toBe(2)
+    expect(result.current.state.answers.annualIncome).toBe(87500)
+    expect(result.current.state.answers.monthlyBudget).toBe(3000)
+  })
+})
+
 describe('WizardContext — completing all steps', () => {
   function answerAll(dispatch: ReturnType<typeof useWizard>['dispatch']) {
     QUESTIONS.forEach(q => {
