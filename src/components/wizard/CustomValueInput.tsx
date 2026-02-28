@@ -6,11 +6,6 @@ interface CustomValueInputProps {
   onSubmit: (value: number) => void
 }
 
-/** Format a raw numeric value for display in the input field */
-function formatDisplay(raw: string, type: CustomInputConfig['type']): string {
-  return raw // keep raw — we show a prefix/suffix instead
-}
-
 /** Parse displayed string to a number, stripping currency symbols and commas */
 function parseValue(raw: string): number {
   return parseFloat(raw.replace(/[$,%\s]/g, '')) || 0
