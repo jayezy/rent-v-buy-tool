@@ -14,7 +14,7 @@ import { QUESTIONS } from '../../lib/constants'
 
 function renderApp() {
   return render(
-    <WizardProvider>
+    <WizardProvider initialView="wizard">
       <App />
     </WizardProvider>
   )

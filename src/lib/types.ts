@@ -1,7 +1,18 @@
+export type AppView = 'landing' | 'wizard' | 'results'
+
 export interface QuestionOption {
   label: string
   value: number | string
   description?: string
+}
+
+/** Config for the freeform custom-value input shown below the option cards */
+export interface CustomInputConfig {
+  type: 'dollar' | 'percent' | 'years'
+  label: string   // e.g. "Or enter an exact amount"
+  min: number
+  max: number
+  step?: number
 }
 
 export interface Question {
@@ -9,6 +20,8 @@ export interface Question {
   title: string
   subtitle: string
   options: QuestionOption[]
+  /** When present, renders a custom-value text input below the option cards */
+  customInput?: CustomInputConfig
 }
 
 export interface LocationData {
@@ -27,6 +40,16 @@ export interface WizardAnswers {
   location: string
   totalSavings: number
   household: string
+}
+
+/** Six rates the user can override from the results dashboard */
+export interface AssumptionOverrides {
+  mortgageRate: number       // decimal, e.g. 0.06
+  homeAppreciation: number   // decimal, e.g. 0.02
+  rentAppreciation: number   // decimal, e.g. 0.03
+  maintenance: number        // decimal, e.g. 0.01
+  closingCostsBuy: number    // decimal, e.g. 0.03
+  sellingCosts: number       // decimal, e.g. 0.06
 }
 
 export interface YearProjection {

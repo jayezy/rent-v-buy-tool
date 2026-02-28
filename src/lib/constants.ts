@@ -35,6 +35,7 @@ export const QUESTIONS: Question[] = [
       { label: '$150K – $250K', value: 200000 },
       { label: '$250K+', value: 300000 },
     ],
+    customInput: { type: 'dollar', label: 'Or enter exact income', min: 0, max: 10000000 },
   },
   {
     id: 'monthlyBudget',
@@ -48,6 +49,7 @@ export const QUESTIONS: Question[] = [
       { label: '$5,000 – $7,500', value: 6250 },
       { label: '$7,500+', value: 9000 },
     ],
+    customInput: { type: 'dollar', label: 'Or enter exact monthly amount', min: 0, max: 100000 },
   },
   {
     id: 'downPayment',
@@ -61,11 +63,12 @@ export const QUESTIONS: Question[] = [
       { label: '$200K – $500K', value: 350000 },
       { label: '$500K+', value: 600000 },
     ],
+    customInput: { type: 'dollar', label: 'Or enter exact savings', min: 0, max: 10000000 },
   },
   {
     id: 'homePrice',
     title: 'What home price range are you considering?',
-    subtitle: 'The typical price of homes you\'re looking at.',
+    subtitle: "The typical price of homes you're looking at.",
     options: [
       { label: 'Under $250K', value: 200000 },
       { label: '$250K – $400K', value: 325000 },
@@ -74,17 +77,19 @@ export const QUESTIONS: Question[] = [
       { label: '$1M – $1.5M', value: 1250000 },
       { label: '$1.5M+', value: 1750000 },
     ],
+    customInput: { type: 'dollar', label: 'Or enter exact home price', min: 0, max: 20000000 },
   },
   {
     id: 'investmentStyle',
     title: 'If you keep renting, how would you invest your savings?',
-    subtitle: 'The money you\'d save by not buying would be invested. What\'s your style?',
+    subtitle: "The money you'd save by not buying would be invested. What's your style?",
     options: [
       { label: 'CDs / Savings account', value: 0.04, description: 'Safe, ~4% return' },
       { label: 'Index funds', value: 0.07, description: 'Moderate, ~7% return' },
       { label: 'Stocks', value: 0.10, description: 'Aggressive, ~10% return' },
       { label: 'Crypto / High-risk', value: 0.13, description: 'Very aggressive, ~13% return' },
     ],
+    customInput: { type: 'percent', label: 'Or enter expected annual return %', min: 0, max: 30 },
   },
   {
     id: 'yearsToStay',
@@ -98,6 +103,7 @@ export const QUESTIONS: Question[] = [
       { label: '10–15 years', value: 15 },
       { label: '15+ years', value: 20 },
     ],
+    customInput: { type: 'years', label: 'Or enter exact number of years', min: 1, max: 50 },
   },
   {
     id: 'bigExpenses',
@@ -106,14 +112,16 @@ export const QUESTIONS: Question[] = [
     options: [
       { label: 'None planned', value: 0 },
       { label: 'Car ($25–50K)', value: 37500 },
-      { label: 'Education', value: 50000, description: 'Grad school, kids\' college, etc.' },
+      { label: 'Education', value: 50000, description: "Grad school, kids' college, etc." },
       { label: 'Wedding', value: 35000 },
       { label: 'Medical', value: 30000 },
       { label: 'Multiple big expenses', value: 75000 },
     ],
+    customInput: { type: 'dollar', label: 'Or enter custom amount', min: 0, max: 2000000 },
   },
   {
     id: 'location',
+    // No customInput — location maps to tax rate lookup keys
     title: 'Where are you looking to live?',
     subtitle: 'This determines property tax and insurance rates.',
     options: [
@@ -137,9 +145,11 @@ export const QUESTIONS: Question[] = [
       { label: '$500K – $1M', value: 750000 },
       { label: '$1M+', value: 1250000 },
     ],
+    customInput: { type: 'dollar', label: 'Or enter exact total savings', min: 0, max: 50000000 },
   },
   {
     id: 'household',
+    // No customInput — household is categorical
     title: "What's your household situation?",
     subtitle: 'Families often value stability more, which favors buying.',
     options: [

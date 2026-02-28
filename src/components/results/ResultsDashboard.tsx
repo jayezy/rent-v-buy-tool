@@ -4,6 +4,7 @@ import SummaryCard from './SummaryCard'
 import CostComparisonChart from './CostComparisonChart'
 import WealthChart from './WealthChart'
 import BreakevenIndicator from './BreakevenIndicator'
+import AssumptionsEditor from './AssumptionsEditor'
 
 interface ResultsDashboardProps {
   result: ProjectionResult
@@ -48,37 +49,9 @@ export default function ResultsDashboard({ result }: ResultsDashboardProps) {
           <WealthChart projections={result.projections} />
         </div>
 
-        {/* Assumptions */}
-        <details className="bg-white rounded-3xl border border-slate-200 p-6 group">
-          <summary className="font-bold text-slate-700 cursor-pointer list-none flex items-center gap-2">
-            <svg className="w-4 h-4 text-slate-400 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-            Assumptions & Rates Used
-          </summary>
-          <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-3 text-sm">
-            <Assumption label="Mortgage rate" value="6.0%" />
-            <Assumption label="Mortgage term" value="30 years" />
-            <Assumption label="Home appreciation" value="2.0%/yr" />
-            <Assumption label="Rent increase" value="3.0%/yr" />
-            <Assumption label="Maintenance" value="1.0%/yr" />
-            <Assumption label="Closing costs" value="3% of price" />
-            <Assumption label="Selling costs" value="6% of value" />
-          </div>
-          <p className="text-xs text-slate-400 mt-4">
-            Rates are based on national averages as of February 2026. Your actual rates may vary.
-          </p>
-        </details>
+        {/* Assumptions — interactive editor */}
+        <AssumptionsEditor />
       </div>
-    </div>
-  )
-}
-
-function Assumption({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <span className="text-slate-500">{label}: </span>
-      <span className="font-medium text-slate-700">{value}</span>
     </div>
   )
 }

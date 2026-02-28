@@ -1,4 +1,4 @@
-import type { WizardAnswers, YearProjection, ProjectionResult } from './types'
+import type { WizardAnswers, YearProjection, ProjectionResult, AssumptionOverrides } from './types'
 import { DEFAULTS, LOCATION_DATA } from './constants'
 
 function getMonthlyMortgagePayment(principal: number, annualRate: number, termYears: number): number {
@@ -43,13 +43,24 @@ function formatCurrency(amount: number): string {
   }).format(amount)
 }
 
-export function calculateProjections(answers: WizardAnswers): ProjectionResult {
+/**
+ * Calculate year-by-year rent vs buy projections.
+ * @param answers   The 10 wizard answers
+ * @param overrides Optional overrides for key assumption rates (merged with DEFAULTS)
+ */
+export function calculateProjections(
+  answers: WizardAnswers,
+  overrides: Partial<AssumptionOverrides> = {},
+): ProjectionResult {
+  // Merge user overrides with built-in defaults
+  const rates = { ...DEFAULTS, ...overrides }
+
   const location = LOCATION_DATA[answers.location] || LOCATION_DATA.other
   const effectiveDownPayment = Math.max(0, answers.downPayment - answers.bigExpenses)
   const loanAmount = Math.max(0, answers.homePrice - effectiveDownPayment)
-  const closingCosts = answers.homePrice * DEFAULTS.closingCostsBuy
+  const closingCosts = answers.homePrice * rates.closingCostsBuy
 
-  const monthlyMortgage = getMonthlyMortgagePayment(loanAmount, DEFAULTS.mortgageRate, DEFAULTS.mortgageTerm)
+  const monthlyMortgage = getMonthlyMortgagePayment(loanAmount, rates.mortgageRate, DEFAULTS.mortgageTerm)
 
   const married = isMarried(answers.household)
   const standardDeduction = married ? DEFAULTS.standardDeductionMarried : DEFAULTS.standardDeductionSingle
@@ -57,27 +68,25 @@ export function calculateProjections(answers: WizardAnswers): ProjectionResult {
   const projections: YearProjection[] = []
   let cumulativeRentCost = 0
   let cumulativeBuyCost = 0
-  let renterInvestmentBalance = effectiveDownPayment + closingCosts // renter invests the down payment + closing costs they don't spend
+  let renterInvestmentBalance = effectiveDownPayment + closingCosts
   let breakevenYear: number | null = null
   let totalInterestPaid = 0
 
   for (let year = 1; year <= answers.yearsToStay; year++) {
     // --- RENT SCENARIO ---
-    const monthlyRent = answers.monthlyBudget * Math.pow(1 + DEFAULTS.rentAppreciation, year - 1)
+    const monthlyRent = answers.monthlyBudget * Math.pow(1 + rates.rentAppreciation, year - 1)
     const annualRentCost = monthlyRent * 12
     cumulativeRentCost += annualRentCost
 
     // --- BUY SCENARIO ---
-    const homeValue = answers.homePrice * Math.pow(1 + DEFAULTS.homeAppreciation, year)
+    const homeValue = answers.homePrice * Math.pow(1 + rates.homeAppreciation, year)
     const annualPropertyTax = homeValue * location.propertyTaxRate
     const annualInsurance = homeValue * location.insuranceRate
-    const annualMaintenance = homeValue * DEFAULTS.maintenance
+    const annualMaintenance = homeValue * rates.maintenance
     const annualMortgagePayments = monthlyMortgage * 12
-    const interestThisYear = getInterestPaidInYear(loanAmount, DEFAULTS.mortgageRate, DEFAULTS.mortgageTerm, year)
+    const interestThisYear = getInterestPaidInYear(loanAmount, rates.mortgageRate, DEFAULTS.mortgageTerm, year)
     totalInterestPaid += interestThisYear
 
-    // Tax benefit: mortgage interest deduction (only if itemizing beats standard deduction)
-    // Simplified: we check if interest + property tax > standard deduction
     const itemizedDeductions = interestThisYear + annualPropertyTax
     const taxBenefit = itemizedDeductions > standardDeduction
       ? (itemizedDeductions - standardDeduction) * getMarginalRate(answers.annualIncome, married)
@@ -91,14 +100,13 @@ export function calculateProjections(answers: WizardAnswers): ProjectionResult {
     const monthlyBuyCost = annualBuyCost / 12
     const monthlySavings = Math.max(0, monthlyBuyCost - monthlyRent)
 
-    // Grow existing balance by annual return, then add monthly contributions
     renterInvestmentBalance *= (1 + answers.investmentStyle)
-    renterInvestmentBalance += monthlySavings * 12 // simplified: lump annual contribution
+    renterInvestmentBalance += monthlySavings * 12
 
     // --- EQUITY ---
-    const remainingMortgage = getRemainingBalance(loanAmount, DEFAULTS.mortgageRate, DEFAULTS.mortgageTerm, year * 12)
+    const remainingMortgage = getRemainingBalance(loanAmount, rates.mortgageRate, DEFAULTS.mortgageTerm, year * 12)
     const equityBuilt = homeValue - remainingMortgage
-    const buyerNetWealth = equityBuilt - (homeValue * DEFAULTS.sellingCosts)
+    const buyerNetWealth = equityBuilt - (homeValue * rates.sellingCosts)
     const renterNetWealth = renterInvestmentBalance
 
     if (breakevenYear === null && buyerNetWealth >= renterNetWealth) {
@@ -164,7 +172,6 @@ export function calculateProjections(answers: WizardAnswers): ProjectionResult {
 }
 
 function getMarginalRate(income: number, married: boolean): number {
-  // 2024 US federal marginal tax brackets (simplified)
   if (married) {
     if (income <= 23200) return 0.10
     if (income <= 94300) return 0.12

@@ -25,9 +25,9 @@ describe('WizardContext — initial state', () => {
     expect(result.current.state.answers).toEqual({})
   })
 
-  it('starts in wizard view', () => {
+  it('starts in landing view by default', () => {
     const { result } = renderHook(() => useWizard(), { wrapper })
-    expect(result.current.state.view).toBe('wizard')
+    expect(result.current.state.view).toBe('landing')
   })
 
   it('starts with null results', () => {

@@ -1,5 +1,6 @@
 import type { Question } from '../../lib/types'
 import OptionCard from './OptionCard'
+import CustomValueInput from './CustomValueInput'
 
 interface QuestionStepProps {
   question: Question
@@ -26,6 +27,13 @@ export default function QuestionStep({ question, selectedValue, onSelect }: Ques
           />
         ))}
       </div>
+
+      {question.customInput && (
+        <CustomValueInput
+          config={question.customInput}
+          onSubmit={(value) => onSelect(value)}
+        />
+      )}
     </div>
   )
 }
