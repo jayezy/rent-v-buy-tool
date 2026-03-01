@@ -195,3 +195,83 @@ describe('WizardContext — completing all steps', () => {
     expect(['buy', 'rent']).toContain(result.current.state.results?.recommendation)
   })
 })
+
+describe('WizardContext — UPDATE_ANSWER action', () => {
+  function answerAll(dispatch: ReturnType<typeof useWizard>['dispatch']) {
+    QUESTIONS.forEach(q => {
+      const value = q.options.length > 0 ? q.options[0].value : '90210'
+      act(() => {
+        dispatch({ type: 'SET_ANSWER', questionId: q.id, value })
+      })
+    })
+  }
+
+  it('updates a single answer without changing the view', () => {
+    const { result } = renderHook(() => useWizard(), { wrapper })
+    answerAll(result.current.dispatch)
+    expect(result.current.state.view).toBe('results')
+
+    act(() => {
+      result.current.dispatch({ type: 'UPDATE_ANSWER', questionId: 'annualIncome', value: 200000 })
+    })
+    expect(result.current.state.view).toBe('results')
+  })
+
+  it('updates a single answer without changing currentStep', () => {
+    const { result } = renderHook(() => useWizard(), { wrapper })
+    answerAll(result.current.dispatch)
+    const stepAfterCompletion = result.current.state.currentStep
+
+    act(() => {
+      result.current.dispatch({ type: 'UPDATE_ANSWER', questionId: 'annualIncome', value: 200000 })
+    })
+    expect(result.current.state.currentStep).toBe(stepAfterCompletion)
+  })
+
+  it('recalculates results after updating an answer', () => {
+    const { result } = renderHook(() => useWizard(), { wrapper })
+    answerAll(result.current.dispatch)
+    const originalResults = result.current.state.results
+
+    act(() => {
+      result.current.dispatch({ type: 'UPDATE_ANSWER', questionId: 'homePrice', value: 1750000 })
+    })
+    expect(result.current.state.results).not.toBeNull()
+    expect(result.current.state.results).not.toEqual(originalResults)
+  })
+})
+
+describe('WizardContext — activeSavedResultId tracking', () => {
+  function answerAll(dispatch: ReturnType<typeof useWizard>['dispatch']) {
+    QUESTIONS.forEach(q => {
+      const value = q.options.length > 0 ? q.options[0].value : '90210'
+      act(() => {
+        dispatch({ type: 'SET_ANSWER', questionId: q.id, value })
+      })
+    })
+  }
+
+  it('activeSavedResultId is null in initial state', () => {
+    const { result } = renderHook(() => useWizard(), { wrapper })
+    expect(result.current.state.activeSavedResultId).toBeNull()
+  })
+
+  it('activeSavedResultId is set after completing the wizard', () => {
+    const { result } = renderHook(() => useWizard(), { wrapper })
+    answerAll(result.current.dispatch)
+    expect(result.current.state.activeSavedResultId).not.toBeNull()
+    // It should match the id of the newest saved result
+    expect(result.current.state.activeSavedResultId).toBe(result.current.state.savedResults[0].id)
+  })
+
+  it('activeSavedResultId is cleared to null on RESET', () => {
+    const { result } = renderHook(() => useWizard(), { wrapper })
+    answerAll(result.current.dispatch)
+    expect(result.current.state.activeSavedResultId).not.toBeNull()
+
+    act(() => {
+      result.current.dispatch({ type: 'RESET' })
+    })
+    expect(result.current.state.activeSavedResultId).toBeNull()
+  })
+})

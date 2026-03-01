@@ -198,3 +198,85 @@ describe('WizardContext — RESET preserves savedResults', () => {
     expect(result.current.state.savedResults).toHaveLength(1)
   })
 })
+
+describe('WizardContext — persist assumption overrides', () => {
+  function answerAll(dispatch: ReturnType<typeof useWizard>['dispatch']) {
+    QUESTIONS.forEach(q => {
+      const value = q.options.length > 0 ? q.options[0].value : '90210'
+      act(() => {
+        dispatch({ type: 'SET_ANSWER', questionId: q.id, value })
+      })
+    })
+  }
+
+  it('UPDATE_ASSUMPTIONS persists overrides to localStorage', () => {
+    const { result } = renderHook(() => useWizard(), { wrapper })
+    answerAll(result.current.dispatch)
+
+    act(() => {
+      result.current.dispatch({ type: 'UPDATE_ASSUMPTIONS', overrides: { mortgageRate: 0.05 } })
+    })
+
+    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY)!)
+    expect(stored).toHaveLength(1)
+    expect(stored[0].assumptionOverrides).toEqual({ mortgageRate: 0.05 })
+  })
+
+  it('CLEAR_ASSUMPTIONS persists cleared overrides to localStorage', () => {
+    const { result } = renderHook(() => useWizard(), { wrapper })
+    answerAll(result.current.dispatch)
+
+    // First set some overrides
+    act(() => {
+      result.current.dispatch({ type: 'UPDATE_ASSUMPTIONS', overrides: { mortgageRate: 0.05 } })
+    })
+
+    // Then clear them
+    act(() => {
+      result.current.dispatch({ type: 'CLEAR_ASSUMPTIONS' })
+    })
+
+    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY)!)
+    expect(stored).toHaveLength(1)
+    expect(stored[0].assumptionOverrides).toEqual({})
+  })
+})
+
+describe('WizardContext — persist answer edits', () => {
+  function answerAll(dispatch: ReturnType<typeof useWizard>['dispatch']) {
+    QUESTIONS.forEach(q => {
+      const value = q.options.length > 0 ? q.options[0].value : '90210'
+      act(() => {
+        dispatch({ type: 'SET_ANSWER', questionId: q.id, value })
+      })
+    })
+  }
+
+  it('UPDATE_ANSWER persists the updated answer to localStorage', () => {
+    const { result } = renderHook(() => useWizard(), { wrapper })
+    answerAll(result.current.dispatch)
+
+    act(() => {
+      result.current.dispatch({ type: 'UPDATE_ANSWER', questionId: 'annualIncome', value: 200000 })
+    })
+
+    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY)!)
+    expect(stored).toHaveLength(1)
+    expect(stored[0].answers.annualIncome).toBe(200000)
+  })
+
+  it('UPDATE_ANSWER regenerates the label when homePrice changes', () => {
+    const { result } = renderHook(() => useWizard(), { wrapper })
+    answerAll(result.current.dispatch)
+    const originalLabel = result.current.state.savedResults[0].label
+
+    act(() => {
+      result.current.dispatch({ type: 'UPDATE_ANSWER', questionId: 'homePrice', value: 1750000 })
+    })
+
+    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY)!)
+    expect(stored).toHaveLength(1)
+    expect(stored[0].label).not.toBe(originalLabel)
+    expect(stored[0].label).toContain('$1.8M')
+  })
+})

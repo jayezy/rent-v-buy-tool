@@ -6,6 +6,7 @@ import CostComparisonChart from './CostComparisonChart'
 import WealthChart from './WealthChart'
 import BreakevenIndicator from './BreakevenIndicator'
 import AssumptionsEditor from './AssumptionsEditor'
+import InputsEditor from './InputsEditor'
 
 interface ResultsDashboardProps {
   result: ProjectionResult
@@ -82,11 +83,20 @@ export default function ResultsDashboard({ result }: ResultsDashboardProps) {
           <WealthChart projections={result.projections} />
         </motion.div>
 
+        {/* Your Inputs — inline answer editor */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.35 }}
+        >
+          <InputsEditor />
+        </motion.div>
+
         {/* Assumptions — interactive editor */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
+          transition={{ duration: 0.5, delay: 0.45 }}
         >
           <AssumptionsEditor />
         </motion.div>
