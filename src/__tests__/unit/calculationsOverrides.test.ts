@@ -14,7 +14,7 @@ const BASE_ANSWERS: WizardAnswers = {
   investmentStyle: 0.07,
   yearsToStay: 10,
   bigExpenses: 0,
-  location: 'westCoast',
+  location: '90210',
   totalSavings: 200000,
   household: 'couple',
 }

@@ -12,7 +12,7 @@ const BASE: WizardAnswers = {
   investmentStyle: 0.07,   // 7% index funds
   yearsToStay: 10,
   bigExpenses: 0,
-  location: 'westCoast',
+  location: '90210',
   totalSavings: 137500,
   household: 'single',
 }
@@ -219,13 +219,13 @@ describe('calculateProjections — investment style', () => {
 
 // ─── Location data ────────────────────────────────────────────────────────────
 describe('calculateProjections — location', () => {
-  it('northeast (high property tax) increases annual buy cost vs mountain', () => {
-    const northeast = calculateProjections(makeAnswers({ location: 'northeast' }))
-    const mountain = calculateProjections(makeAnswers({ location: 'mountain' }))
-    expect(northeast.projections[0].annualBuyCost).toBeGreaterThan(mountain.projections[0].annualBuyCost)
+  it('NJ (high property tax) increases annual buy cost vs AZ (low tax)', () => {
+    const nj = calculateProjections(makeAnswers({ location: '07001' }))
+    const az = calculateProjections(makeAnswers({ location: '85001' }))
+    expect(nj.projections[0].annualBuyCost).toBeGreaterThan(az.projections[0].annualBuyCost)
   })
 
-  it('unknown location falls back to "other" rates without crashing', () => {
+  it('unknown location falls back to national average rates without crashing', () => {
     const result = calculateProjections(makeAnswers({ location: 'mars' }))
     expect(result.projections).toHaveLength(10)
   })

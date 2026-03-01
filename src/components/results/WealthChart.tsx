@@ -24,12 +24,12 @@ function formatCurrency(n: number): string {
 function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-3 text-sm">
-      <div className="font-semibold text-slate-700 mb-2">Year {label}</div>
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-3 text-sm">
+      <div className="font-semibold text-slate-700 dark:text-slate-300 mb-2">Year {label}</div>
       {payload.map((entry: any) => (
         <div key={entry.name} className="flex justify-between gap-4">
           <span style={{ color: entry.color }}>{entry.name}</span>
-          <span className="font-medium text-slate-800">{formatCurrency(entry.value)}</span>
+          <span className="font-medium text-slate-800 dark:text-slate-200">{formatCurrency(entry.value)}</span>
         </div>
       ))}
     </div>
@@ -38,23 +38,23 @@ function CustomTooltip({ active, payload, label }: any) {
 
 export default function WealthChart({ projections }: WealthChartProps) {
   return (
-    <div className="bg-white rounded-3xl border border-slate-200 p-4 sm:p-6">
-      <h3 className="text-lg font-bold text-slate-800 mb-1">Net Wealth Comparison</h3>
-      <p className="text-sm text-slate-500 mb-4">
+    <div className="glass-card rounded-3xl p-4 sm:p-6">
+      <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-1">Net Wealth Comparison</h3>
+      <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
         Home equity (minus selling costs) vs. investment portfolio
       </p>
       <ResponsiveContainer width="100%" height={340}>
         <LineChart data={projections} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--color-chart-grid)" />
           <XAxis
             dataKey="year"
             tickFormatter={(y) => `Yr ${y}`}
-            tick={{ fontSize: 12, fill: '#94a3b8' }}
-            axisLine={{ stroke: '#e2e8f0' }}
+            tick={{ fontSize: 12, fill: 'var(--color-chart-tick)' }}
+            axisLine={{ stroke: 'var(--color-chart-grid)' }}
           />
           <YAxis
             tickFormatter={formatK}
-            tick={{ fontSize: 12, fill: '#94a3b8' }}
+            tick={{ fontSize: 12, fill: 'var(--color-chart-tick)' }}
             axisLine={false}
             tickLine={false}
             width={60}
@@ -67,19 +67,19 @@ export default function WealthChart({ projections }: WealthChartProps) {
             type="monotone"
             dataKey="buyerNetWealth"
             name="Buyer (equity)"
-            stroke="#2563eb"
+            stroke="var(--color-chart-buy)"
             strokeWidth={3}
             dot={false}
-            activeDot={{ r: 5, strokeWidth: 2, fill: '#fff' }}
+            activeDot={{ r: 5, strokeWidth: 2, fill: 'var(--color-tooltip-bg)' }}
           />
           <Line
             type="monotone"
             dataKey="renterNetWealth"
             name="Renter (investments)"
-            stroke="#10b981"
+            stroke="var(--color-chart-renter)"
             strokeWidth={3}
             dot={false}
-            activeDot={{ r: 5, strokeWidth: 2, fill: '#fff' }}
+            activeDot={{ r: 5, strokeWidth: 2, fill: 'var(--color-tooltip-bg)' }}
           />
         </LineChart>
       </ResponsiveContainer>

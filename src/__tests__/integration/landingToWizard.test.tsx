@@ -23,10 +23,10 @@ describe('Landing → Wizard navigation', () => {
     expect(screen.getByText('HomeWise')).toBeInTheDocument()
   })
 
-  it('clicking "Take the Free Survey" opens the wizard modal', async () => {
+  it('clicking "Run Your Numbers" opens the wizard modal', async () => {
     const user = userEvent.setup()
     renderFromLanding()
-    const cta = screen.getAllByRole('button', { name: /take the free survey/i })[0]
+    const cta = screen.getAllByRole('button', { name: /run your numbers/i })[0]
     await user.click(cta)
     expect(await screen.findByRole('dialog')).toBeInTheDocument()
     const dialog = screen.getByRole('dialog')
@@ -36,7 +36,7 @@ describe('Landing → Wizard navigation', () => {
   it('landing page stays in the DOM behind the wizard modal', async () => {
     const user = userEvent.setup()
     renderFromLanding()
-    const cta = screen.getAllByRole('button', { name: /take the free survey/i })[0]
+    const cta = screen.getAllByRole('button', { name: /run your numbers/i })[0]
     await user.click(cta)
     await screen.findByRole('dialog')
     // HomeWise is still present (landing page behind modal)
@@ -46,7 +46,7 @@ describe('Landing → Wizard navigation', () => {
   it('wizard modal has a close button', async () => {
     const user = userEvent.setup()
     renderFromLanding()
-    const cta = screen.getAllByRole('button', { name: /take the free survey/i })[0]
+    const cta = screen.getAllByRole('button', { name: /run your numbers/i })[0]
     await user.click(cta)
     await screen.findByRole('dialog')
     expect(screen.getByLabelText('Close survey')).toBeInTheDocument()
@@ -55,7 +55,7 @@ describe('Landing → Wizard navigation', () => {
   it('clicking the close button dismisses the wizard modal', async () => {
     const user = userEvent.setup()
     renderFromLanding()
-    const cta = screen.getAllByRole('button', { name: /take the free survey/i })[0]
+    const cta = screen.getAllByRole('button', { name: /run your numbers/i })[0]
     await user.click(cta)
     await screen.findByRole('dialog')
     await user.click(screen.getByLabelText('Close survey'))
@@ -70,7 +70,7 @@ describe('Landing → Wizard navigation', () => {
     renderFromLanding()
 
     // Open survey and answer first question
-    await user.click(screen.getAllByRole('button', { name: /take the free survey/i })[0])
+    await user.click(screen.getAllByRole('button', { name: /run your numbers/i })[0])
     const dialog = await screen.findByRole('dialog')
     const buttons = within(dialog).getAllByRole('button').filter(b => !b.getAttribute('aria-label'))
     await user.click(buttons[0])
@@ -81,7 +81,7 @@ describe('Landing → Wizard navigation', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
 
     // Re-open — should be at question 2
-    await user.click(screen.getAllByRole('button', { name: /take the free survey/i })[0])
+    await user.click(screen.getAllByRole('button', { name: /run your numbers/i })[0])
     const dialog2 = await screen.findByRole('dialog')
     expect(within(dialog2).getByText('Question 2 of 10')).toBeInTheDocument()
   })
@@ -90,7 +90,7 @@ describe('Landing → Wizard navigation', () => {
 describe('Wizard modal — custom value input integration', () => {
   async function openWizard(user: ReturnType<typeof userEvent.setup>) {
     renderFromLanding()
-    const cta = screen.getAllByRole('button', { name: /take the free survey/i })[0]
+    const cta = screen.getAllByRole('button', { name: /run your numbers/i })[0]
     await user.click(cta)
     const dialog = await screen.findByRole('dialog')
     await within(dialog).findByText(QUESTIONS[0].title)
@@ -136,14 +136,21 @@ describe('Results — assumptions editor integration', () => {
   async function completeWizardFromLanding(user: ReturnType<typeof userEvent.setup>) {
     renderFromLanding()
     // Open wizard
-    const cta = screen.getAllByRole('button', { name: /take the free survey/i })[0]
+    const cta = screen.getAllByRole('button', { name: /run your numbers/i })[0]
     await user.click(cta)
     const dialog = await screen.findByRole('dialog')
     // Complete all 10 questions
     for (let i = 0; i < QUESTIONS.length; i++) {
       await within(dialog).findByText(QUESTIONS[i].title)
-      const buttons = within(dialog).getAllByRole('button').filter(b => !b.getAttribute('aria-label'))
-      await user.click(buttons[0])
+      if (QUESTIONS[i].options.length === 0 && QUESTIONS[i].customInput?.type === 'zip') {
+        const input = within(dialog).getByLabelText(/zip code/i)
+        await user.type(input, '90210')
+        const submitBtn = within(dialog).getByRole('button', { name: /continue/i })
+        await user.click(submitBtn)
+      } else {
+        const buttons = within(dialog).getAllByRole('button').filter(b => !b.getAttribute('aria-label'))
+        await user.click(buttons[0])
+      }
     }
     await screen.findByText('Your Results')
   }

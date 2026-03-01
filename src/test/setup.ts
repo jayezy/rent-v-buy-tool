@@ -1,26 +1,24 @@
 import '@testing-library/jest-dom'
+import { vi } from 'vitest'
 
-// Mock IntersectionObserver for jsdom — immediately marks elements as visible
-// so ScrollReveal content is accessible in all tests.
-global.IntersectionObserver = class IntersectionObserverMock {
-  private callback: IntersectionObserverCallback
-  root = null
-  rootMargin = ''
-  thresholds: number[] = []
+// Note: IntersectionObserver mock is no longer needed — ScrollReveal now uses
+// Motion's useInView which is mocked via the Vite alias to __mocks__/motion-react.tsx.
+// The mock returns true by default, making all ScrollReveal content visible in tests.
 
-  constructor(callback: IntersectionObserverCallback) {
-    this.callback = callback
-  }
+// jsdom doesn't implement scrollIntoView — stub it globally
+Element.prototype.scrollIntoView = () => {}
 
-  observe(target: Element) {
-    // Immediately trigger as visible
-    this.callback(
-      [{ isIntersecting: true, target, intersectionRatio: 1 } as IntersectionObserverEntry],
-      this as unknown as IntersectionObserver,
-    )
-  }
-
-  disconnect() {}
-  unobserve() {}
-  takeRecords(): IntersectionObserverEntry[] { return [] }
-} as unknown as typeof IntersectionObserver
+// jsdom doesn't implement matchMedia — stub it globally for ThemeContext
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
+})

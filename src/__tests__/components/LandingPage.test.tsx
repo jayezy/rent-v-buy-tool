@@ -1,6 +1,6 @@
 /**
  * Tests for LandingPage component.
- * Verifies the hero content, stat cards, CTA buttons, and navigation dispatch.
+ * Verifies the hero content, CTA buttons, comparison section, and navigation.
  */
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
@@ -22,22 +22,20 @@ describe('LandingPage — hero section', () => {
     expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
   })
 
-  it('heading contains "buy or rent" text', () => {
+  it('heading contains "rent or buy" text', () => {
     renderLanding()
     const heading = screen.getByRole('heading', { level: 1 })
-    expect(heading.textContent).toMatch(/buy or rent/i)
+    expect(heading.textContent).toMatch(/rent or buy/i)
   })
 
   it('renders the primary CTA button', () => {
     renderLanding()
-    // There are two CTA buttons — both should have the survey label
-    const buttons = screen.getAllByRole('button', { name: /take the free survey/i })
-    expect(buttons.length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByRole('button', { name: /run your numbers/i })).toBeInTheDocument()
   })
 
-  it('renders the nav Take the Survey link', () => {
+  it('renders the nav Try Calculator link', () => {
     renderLanding()
-    expect(screen.getByRole('button', { name: /take the survey/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /try calculator/i })).toBeInTheDocument()
   })
 
   it('renders the brand name', () => {
@@ -46,63 +44,34 @@ describe('LandingPage — hero section', () => {
   })
 })
 
-describe('LandingPage — stat cards', () => {
-  it('shows current mortgage rate stat', () => {
+describe('LandingPage — comparison section', () => {
+  it('renders the renter vs buyer comparison section', () => {
     renderLanding()
-    expect(screen.getByText('6.0%')).toBeInTheDocument()
+    expect(screen.getByText(/renting vs\. buying/i)).toBeInTheDocument()
   })
 
-  it('shows high-yield savings stat', () => {
+  it('renders comparison tabs', () => {
     renderLanding()
-    expect(screen.getByText('4.0%')).toBeInTheDocument()
-  })
-
-  it('shows home appreciation stat', () => {
-    renderLanding()
-    expect(screen.getByText('2.0%')).toBeInTheDocument()
-  })
-
-  it('shows the mortgage rate label', () => {
-    renderLanding()
-    expect(screen.getByText('Current Mortgage Rate')).toBeInTheDocument()
-  })
-})
-
-describe('LandingPage — feature strip', () => {
-  it('shows Real Financial Math feature', () => {
-    renderLanding()
-    expect(screen.getByText('Real Financial Math')).toBeInTheDocument()
-  })
-
-  it('shows 10-Year Projections feature', () => {
-    renderLanding()
-    expect(screen.getByText('10-Year Projections')).toBeInTheDocument()
-  })
-
-  it('shows Editable Assumptions feature', () => {
-    renderLanding()
-    expect(screen.getByText('Editable Assumptions')).toBeInTheDocument()
+    expect(screen.getByRole('tablist')).toBeInTheDocument()
   })
 })
 
 describe('LandingPage — navigation', () => {
   it('clicking CTA button navigates to wizard (shows first question)', async () => {
     const user = userEvent.setup()
-    // We need to render App so view switching works
     const { default: App } = await import('../../App')
     render(
       <WizardProvider initialView="landing">
         <App />
       </WizardProvider>
     )
-    const ctaButton = screen.getAllByRole('button', { name: /take the free survey/i })[0]
+    const ctaButton = screen.getByRole('button', { name: /run your numbers/i })
     await user.click(ctaButton)
-    // After navigation, the wizard's first question should appear
     const { QUESTIONS } = await import('../../lib/constants')
     expect(await screen.findByText(QUESTIONS[0].title)).toBeInTheDocument()
   })
 
-  it('clicking nav survey link also navigates to wizard', async () => {
+  it('clicking nav Try Calculator link also navigates to wizard', async () => {
     const user = userEvent.setup()
     const { default: App } = await import('../../App')
     render(
@@ -110,7 +79,7 @@ describe('LandingPage — navigation', () => {
         <App />
       </WizardProvider>
     )
-    const navLink = screen.getByRole('button', { name: /take the survey/i })
+    const navLink = screen.getByRole('button', { name: /try calculator/i })
     await user.click(navLink)
     const { QUESTIONS } = await import('../../lib/constants')
     expect(await screen.findByText(QUESTIONS[0].title)).toBeInTheDocument()

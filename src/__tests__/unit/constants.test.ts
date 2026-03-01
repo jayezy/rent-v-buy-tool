@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { QUESTIONS, DEFAULTS, LOCATION_DATA } from '../../lib/constants'
+import { QUESTIONS, DEFAULTS } from '../../lib/constants'
 
 describe('QUESTIONS', () => {
   it('contains exactly 10 questions', () => {
@@ -13,7 +13,7 @@ describe('QUESTIONS', () => {
       expect(q.title.length).toBeGreaterThan(0)
       expect(typeof q.subtitle).toBe('string')
       expect(Array.isArray(q.options)).toBe(true)
-      expect(q.options.length).toBeGreaterThanOrEqual(2)
+      expect(q.options.length).toBeGreaterThanOrEqual(0)
     })
   })
 
@@ -58,11 +58,11 @@ describe('QUESTIONS', () => {
     })
   })
 
-  it('location question has string values', () => {
+  it('location question has zip customInput and empty options', () => {
     const locationQ = QUESTIONS.find(q => q.id === 'location')!
-    locationQ.options.forEach(opt => {
-      expect(typeof opt.value).toBe('string')
-    })
+    expect(locationQ.options).toHaveLength(0)
+    expect(locationQ.customInput).toBeDefined()
+    expect(locationQ.customInput!.type).toBe('zip')
   })
 
   it('investmentStyle options represent realistic return rates (0–20%)', () => {
@@ -107,35 +107,3 @@ describe('DEFAULTS', () => {
   })
 })
 
-describe('LOCATION_DATA', () => {
-  const expectedLocations = ['northeast', 'westCoast', 'southeast', 'midwest', 'mountain', 'other']
-
-  it('contains all expected location keys', () => {
-    expectedLocations.forEach(loc => {
-      expect(LOCATION_DATA).toHaveProperty(loc)
-    })
-  })
-
-  it('each location has propertyTaxRate and insuranceRate', () => {
-    Object.values(LOCATION_DATA).forEach(loc => {
-      expect(typeof loc.propertyTaxRate).toBe('number')
-      expect(typeof loc.insuranceRate).toBe('number')
-    })
-  })
-
-  it('property tax rates are between 0.1% and 3%', () => {
-    Object.values(LOCATION_DATA).forEach(loc => {
-      expect(loc.propertyTaxRate).toBeGreaterThan(0.001)
-      expect(loc.propertyTaxRate).toBeLessThan(0.03)
-    })
-  })
-
-  it('northeast has the highest property tax rate', () => {
-    const northeastRate = LOCATION_DATA.northeast.propertyTaxRate
-    Object.entries(LOCATION_DATA)
-      .filter(([key]) => key !== 'northeast')
-      .forEach(([, loc]) => {
-        expect(northeastRate).toBeGreaterThanOrEqual(loc.propertyTaxRate)
-      })
-  })
-})

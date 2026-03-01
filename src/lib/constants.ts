@@ -1,4 +1,4 @@
-import type { Question, LocationData } from './types'
+import type { Question } from './types'
 
 // Current market rates (Feb 2026)
 export const DEFAULTS = {
@@ -12,15 +12,6 @@ export const DEFAULTS = {
   standardDeductionSingle: 14600,
   standardDeductionMarried: 29200,
 } as const
-
-export const LOCATION_DATA: Record<string, LocationData> = {
-  northeast:  { propertyTaxRate: 0.018, insuranceRate: 0.006 },
-  westCoast:  { propertyTaxRate: 0.010, insuranceRate: 0.004 },
-  southeast:  { propertyTaxRate: 0.012, insuranceRate: 0.007 },
-  midwest:    { propertyTaxRate: 0.016, insuranceRate: 0.005 },
-  mountain:   { propertyTaxRate: 0.008, insuranceRate: 0.005 },
-  other:      { propertyTaxRate: 0.012, insuranceRate: 0.005 },
-}
 
 export const QUESTIONS: Question[] = [
   {
@@ -121,17 +112,10 @@ export const QUESTIONS: Question[] = [
   },
   {
     id: 'location',
-    // No customInput — location maps to tax rate lookup keys
-    title: 'Where are you looking to live?',
-    subtitle: 'This determines property tax and insurance rates.',
-    options: [
-      { label: 'Northeast', value: 'northeast', description: 'NY, NJ, CT, MA' },
-      { label: 'West Coast', value: 'westCoast', description: 'CA, WA, OR' },
-      { label: 'Southeast', value: 'southeast', description: 'FL, TX, GA, NC' },
-      { label: 'Midwest', value: 'midwest', description: 'IL, OH, MI, MN' },
-      { label: 'Mountain West', value: 'mountain', description: 'CO, AZ, UT, NV' },
-      { label: 'Other', value: 'other' },
-    ],
+    title: 'What zip code are you considering?',
+    subtitle: 'We use this to look up property tax and insurance rates for your state.',
+    options: [],
+    customInput: { type: 'zip', label: 'Enter a 5-digit zip code', min: 0, max: 99999 },
   },
   {
     id: 'totalSavings',

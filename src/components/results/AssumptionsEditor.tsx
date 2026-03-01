@@ -81,11 +81,11 @@ export default function AssumptionsEditor() {
   const hasOverrides = Object.keys(overrides).length > 0
 
   return (
-    <details className="bg-white rounded-3xl border border-slate-200 p-6 group">
-      <summary className="font-bold text-slate-700 cursor-pointer list-none flex items-center justify-between">
+    <details className="glass-card rounded-3xl p-6 group">
+      <summary className="font-bold text-slate-700 dark:text-slate-300 cursor-pointer list-none flex items-center justify-between">
         <div className="flex items-center gap-2">
           <svg
-            className="w-4 h-4 text-slate-400 transition-transform group-open:rotate-90"
+            className="w-4 h-4 text-slate-400 dark:text-slate-500 transition-transform group-open:rotate-90"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -95,7 +95,7 @@ export default function AssumptionsEditor() {
           </svg>
           Assumptions &amp; Rates
           {hasOverrides && (
-            <span className="ml-2 px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 text-xs font-semibold">
+            <span className="ml-2 px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold">
               Customized
             </span>
           )}
@@ -106,7 +106,7 @@ export default function AssumptionsEditor() {
               e.preventDefault()
               handleReset()
             }}
-            className="text-xs text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+            className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer"
           >
             Reset to defaults
           </button>
@@ -123,11 +123,11 @@ export default function AssumptionsEditor() {
               <div className="flex items-center justify-between mb-2">
                 <label
                   htmlFor={`slider-${slider.key}`}
-                  className="text-sm font-medium text-slate-600"
+                  className="text-sm font-medium text-slate-600 dark:text-slate-400"
                 >
                   {slider.label}
                 </label>
-                <span className="text-sm font-bold text-indigo-600 tabular-nums">
+                <span className="text-sm font-bold text-slate-800 dark:text-slate-200 tabular-nums">
                   {slider.format(value)}
                 </span>
               </div>
@@ -142,13 +142,13 @@ export default function AssumptionsEditor() {
                   value={value}
                   onChange={e => handleChange(slider.key, parseFloat(e.target.value))}
                   className="w-full h-2 appearance-none rounded-full cursor-pointer
-                    bg-slate-200 accent-indigo-600"
+                    bg-slate-200 dark:bg-slate-700 accent-slate-700 dark:accent-slate-400"
                   style={{
-                    background: `linear-gradient(to right, #4f46e5 ${percent}%, #e2e8f0 ${percent}%)`,
+                    background: `linear-gradient(to right, var(--color-slider-fill) ${percent}%, var(--color-slider-track) ${percent}%)`,
                   }}
                 />
               </div>
-              <div className="flex justify-between text-xs text-slate-400 mt-1">
+              <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mt-1">
                 <span>{slider.format(slider.min)}</span>
                 <span>{slider.format(slider.max)}</span>
               </div>
@@ -157,7 +157,7 @@ export default function AssumptionsEditor() {
         })}
       </div>
 
-      <p className="text-xs text-slate-400 mt-6">
+      <p className="text-xs text-slate-500 dark:text-slate-400 mt-6">
         Rates are based on national averages as of February 2026. Drag sliders to model different scenarios — projections update instantly.
       </p>
     </details>
