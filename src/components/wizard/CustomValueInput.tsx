@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import type { CustomInputConfig } from '../../lib/types'
+import { zipToState } from '../../lib/zipToState'
+import { STATE_DATA } from '../../lib/stateData'
 
 interface CustomValueInputProps {
   config: CustomInputConfig
-  onSubmit: (value: number) => void
+  onSubmit: (value: number | string) => void
 }
 
 /** Parse displayed string to a number, stripping currency symbols and commas */
@@ -14,11 +16,50 @@ function parseValue(raw: string): number {
 export default function CustomValueInput({ config, onSubmit }: CustomValueInputProps) {
   const [raw, setRaw] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [stateHint, setStateHint] = useState<string | null>(null)
 
+  const isZip = config.type === 'zip'
   const prefix = config.type === 'dollar' ? '$' : null
   const suffix = config.type === 'percent' ? '%' : config.type === 'years' ? ' yrs' : null
 
+  function handleZipChange(value: string) {
+    // Only allow digits, max 5 characters
+    const cleaned = value.replace(/\D/g, '').slice(0, 5)
+    setRaw(cleaned)
+    setError(null)
+
+    // Show state hint when 5 digits entered
+    if (cleaned.length === 5) {
+      const stateAbbr = zipToState(cleaned)
+      if (stateAbbr && STATE_DATA[stateAbbr]) {
+        setStateHint(STATE_DATA[stateAbbr].stateName)
+      } else {
+        setStateHint(null)
+      }
+    } else {
+      setStateHint(null)
+    }
+  }
+
   function handleSubmit() {
+    if (isZip) {
+      const cleaned = raw.replace(/\D/g, '')
+      if (cleaned.length !== 5) {
+        setError('Please enter a 5-digit zip code')
+        return
+      }
+      const stateAbbr = zipToState(cleaned)
+      if (!stateAbbr) {
+        setError('Not a recognized US zip code')
+        return
+      }
+      setError(null)
+      onSubmit(cleaned)
+      setRaw('')
+      setStateHint(null)
+      return
+    }
+
     const num = parseValue(raw)
     if (isNaN(num) || raw.trim() === '') {
       setError('Please enter a valid number')
@@ -42,7 +83,7 @@ export default function CustomValueInput({ config, onSubmit }: CustomValueInputP
   }
 
   return (
-    <div className="mt-6 pt-6 border-t border-slate-200">
+    <div className={isZip ? '' : 'mt-6 pt-6 border-t border-slate-200'}>
       <p className="text-sm font-medium text-slate-500 mb-3">{config.label}</p>
       <div className="flex gap-3 items-start">
         <div className="relative flex-1">
@@ -51,34 +92,54 @@ export default function CustomValueInput({ config, onSubmit }: CustomValueInputP
               {prefix}
             </span>
           )}
-          <input
-            type="number"
-            inputMode="decimal"
-            aria-label={config.label}
-            value={raw}
-            onChange={e => {
-              setRaw(e.target.value)
-              setError(null)
-            }}
-            onKeyDown={handleKey}
-            min={config.min}
-            max={config.max}
-            step={config.step ?? (config.type === 'percent' ? 0.1 : 1)}
-            placeholder={
-              config.type === 'dollar'
-                ? '0'
-                : config.type === 'percent'
-                  ? '0.0'
-                  : '0'
-            }
-            className={`w-full rounded-xl border py-3 text-slate-800 font-medium
-              focus:outline-none focus:ring-2 transition-all
-              ${prefix ? 'pl-8 pr-4' : suffix ? 'pl-4 pr-12' : 'px-4'}
-              ${error
-                ? 'border-red-300 focus:ring-red-300 bg-red-50'
-                : 'border-slate-300 focus:ring-indigo-300 bg-white'
-              }`}
-          />
+          {isZip ? (
+            <input
+              type="text"
+              inputMode="numeric"
+              maxLength={5}
+              pattern="[0-9]{5}"
+              aria-label={config.label}
+              value={raw}
+              onChange={e => handleZipChange(e.target.value)}
+              onKeyDown={handleKey}
+              placeholder="e.g. 90210"
+              className={`w-full rounded-xl border py-3 px-4 text-slate-800 font-medium
+                focus:outline-none focus:ring-2 transition-all text-lg tracking-widest
+                ${error
+                  ? 'border-red-300 focus:ring-red-300 bg-red-50'
+                  : 'border-slate-300 focus:ring-slate-400 bg-white'
+                }`}
+            />
+          ) : (
+            <input
+              type="number"
+              inputMode="decimal"
+              aria-label={config.label}
+              value={raw}
+              onChange={e => {
+                setRaw(e.target.value)
+                setError(null)
+              }}
+              onKeyDown={handleKey}
+              min={config.min}
+              max={config.max}
+              step={config.step ?? (config.type === 'percent' ? 0.1 : 1)}
+              placeholder={
+                config.type === 'dollar'
+                  ? '0'
+                  : config.type === 'percent'
+                    ? '0.0'
+                    : '0'
+              }
+              className={`w-full rounded-xl border py-3 text-slate-800 font-medium
+                focus:outline-none focus:ring-2 transition-all
+                ${prefix ? 'pl-8 pr-4' : suffix ? 'pl-4 pr-12' : 'px-4'}
+                ${error
+                  ? 'border-red-300 focus:ring-red-300 bg-red-50'
+                  : 'border-slate-300 focus:ring-slate-400 bg-white'
+                }`}
+            />
+          )}
           {suffix && (
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium pointer-events-none">
               {suffix}
@@ -88,13 +149,18 @@ export default function CustomValueInput({ config, onSubmit }: CustomValueInputP
         <button
           onClick={handleSubmit}
           disabled={raw.trim() === ''}
-          className="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200
+          className="px-5 py-3 bg-slate-800 hover:bg-slate-900 disabled:bg-slate-200
             disabled:text-slate-400 text-white font-semibold rounded-xl transition-colors cursor-pointer
             disabled:cursor-not-allowed shrink-0"
         >
-          Use this
+          {isZip ? 'Continue' : 'Use this'}
         </button>
       </div>
+      {stateHint && !error && (
+        <p className="mt-2 text-sm text-emerald-600 font-medium">
+          {stateHint}
+        </p>
+      )}
       {error && (
         <p role="alert" className="mt-2 text-sm text-red-500">
           {error}

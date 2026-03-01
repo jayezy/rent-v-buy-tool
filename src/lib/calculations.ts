@@ -1,5 +1,6 @@
 import type { WizardAnswers, YearProjection, ProjectionResult, AssumptionOverrides } from './types'
-import { DEFAULTS, LOCATION_DATA } from './constants'
+import { DEFAULTS } from './constants'
+import { getLocationData } from './stateData'
 
 function getMonthlyMortgagePayment(principal: number, annualRate: number, termYears: number): number {
   const monthlyRate = annualRate / 12
@@ -55,7 +56,7 @@ export function calculateProjections(
   // Merge user overrides with built-in defaults
   const rates = { ...DEFAULTS, ...overrides }
 
-  const location = LOCATION_DATA[answers.location] || LOCATION_DATA.other
+  const location = getLocationData(answers.location)
   const effectiveDownPayment = Math.max(0, answers.downPayment - answers.bigExpenses)
   const loanAmount = Math.max(0, answers.homePrice - effectiveDownPayment)
   const closingCosts = answers.homePrice * rates.closingCostsBuy

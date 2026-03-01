@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { motion } from 'motion/react'
 import { useWizard } from '../../context/WizardContext'
 import { QUESTIONS } from '../../lib/constants'
 import type { WizardAnswers } from '../../lib/types'
@@ -35,11 +36,15 @@ export default function WizardModal() {
   }, [])
 
   return (
-    <div
+    <motion.div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
       aria-label="Survey"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
     >
       {/* Backdrop */}
       <div
@@ -48,10 +53,14 @@ export default function WizardModal() {
       />
 
       {/* Modal card */}
-      <div
+      <motion.div
         className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto
           bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl shadow-slate-900/10
-          border border-white/50 animate-fade-in"
+          border border-white/50"
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
       >
         {/* Header */}
         <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md rounded-t-3xl border-b border-slate-100 px-6 py-4">
@@ -90,7 +99,7 @@ export default function WizardModal() {
             onSelect={handleSelect}
           />
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }

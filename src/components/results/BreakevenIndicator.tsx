@@ -6,8 +6,8 @@ interface BreakevenIndicatorProps {
 export default function BreakevenIndicator({ breakevenYear, totalYears }: BreakevenIndicatorProps) {
   if (breakevenYear === null) {
     return (
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 flex items-center gap-4">
-        <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-xl shrink-0">
+      <div className="glass-card rounded-3xl p-6 flex items-center gap-4">
+        <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center text-xl shrink-0">
           ⏳
         </div>
         <div>
@@ -23,9 +23,9 @@ export default function BreakevenIndicator({ breakevenYear, totalYears }: Breake
   const pct = (breakevenYear / totalYears) * 100
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-200 p-6">
+    <div className="glass-card rounded-3xl p-6">
       <div className="flex items-center gap-4 mb-4">
-        <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-xl shrink-0">
+        <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-xl shrink-0">
           ✓
         </div>
         <div>
@@ -39,7 +39,7 @@ export default function BreakevenIndicator({ breakevenYear, totalYears }: Breake
       </div>
       <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-amber-400 to-emerald-500 rounded-full transition-all duration-1000"
+          className="h-full bg-gradient-to-r from-slate-400 to-emerald-500 rounded-full transition-all duration-1000"
           style={{ width: `${pct}%` }}
         />
       </div>

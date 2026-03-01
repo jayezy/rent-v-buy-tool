@@ -170,7 +170,7 @@ describe('WizardContext — GO_TO_LANDING action', () => {
 describe('WizardContext — completing all steps', () => {
   function answerAll(dispatch: ReturnType<typeof useWizard>['dispatch']) {
     QUESTIONS.forEach(q => {
-      const value = q.options[0].value
+      const value = q.options.length > 0 ? q.options[0].value : '90210'
       act(() => {
         dispatch({ type: 'SET_ANSWER', questionId: q.id, value })
       })

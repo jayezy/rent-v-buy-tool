@@ -2,13 +2,13 @@
 
 @theme {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --color-primary: #8b5cf6;
-  --color-primary-light: #a78bfa;
-  --color-primary-dark: #7c3aed;
-  --color-rent: #f472b6;
-  --color-rent-light: #fbcfe8;
-  --color-buy: #818cf8;
-  --color-buy-light: #c7d2fe;
+  --color-primary: #475569;
+  --color-primary-light: #64748b;
+  --color-primary-dark: #334155;
+  --color-rent: #64748b;
+  --color-rent-light: #cbd5e1;
+  --color-buy: #475569;
+  --color-buy-light: #e2e8f0;
   --color-success: #34d399;
   --color-warning: #fbbf24;
 }
@@ -32,7 +32,7 @@ html {
   }
 }
 
-/* Animated background blobs */
+/* Animated background blobs — subtle neutral tones */
 @keyframes blob-drift {
   0%, 100% { transform: translate(0, 0) scale(1); }
   25% { transform: translate(30px, -50px) scale(1.1); }
@@ -56,7 +56,7 @@ html {
   position: absolute;
   border-radius: 50%;
   filter: blur(80px);
-  opacity: 0.35;
+  opacity: 0.25;
   pointer-events: none;
   will-change: transform;
 }
@@ -66,10 +66,18 @@ html {
 .blob-3 { animation: blob-drift 30s ease-in-out infinite; }
 
 .glass {
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -80,7 +88,7 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background: linear-gradient(135deg, #fff1f2 0%, #faf5ff 50%, #f0f9ff 100%);
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 40%, #e2e8f0 100%);
   min-height: 100vh;
   margin: 0;
 }

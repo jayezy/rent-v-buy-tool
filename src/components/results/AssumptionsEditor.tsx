@@ -81,7 +81,7 @@ export default function AssumptionsEditor() {
   const hasOverrides = Object.keys(overrides).length > 0
 
   return (
-    <details className="bg-white rounded-3xl border border-slate-200 p-6 group">
+    <details className="glass-card rounded-3xl p-6 group">
       <summary className="font-bold text-slate-700 cursor-pointer list-none flex items-center justify-between">
         <div className="flex items-center gap-2">
           <svg
@@ -95,7 +95,7 @@ export default function AssumptionsEditor() {
           </svg>
           Assumptions &amp; Rates
           {hasOverrides && (
-            <span className="ml-2 px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 text-xs font-semibold">
+            <span className="ml-2 px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 text-xs font-semibold">
               Customized
             </span>
           )}
@@ -127,7 +127,7 @@ export default function AssumptionsEditor() {
                 >
                   {slider.label}
                 </label>
-                <span className="text-sm font-bold text-indigo-600 tabular-nums">
+                <span className="text-sm font-bold text-slate-800 tabular-nums">
                   {slider.format(value)}
                 </span>
               </div>
@@ -142,9 +142,9 @@ export default function AssumptionsEditor() {
                   value={value}
                   onChange={e => handleChange(slider.key, parseFloat(e.target.value))}
                   className="w-full h-2 appearance-none rounded-full cursor-pointer
-                    bg-slate-200 accent-indigo-600"
+                    bg-slate-200 accent-slate-700"
                   style={{
-                    background: `linear-gradient(to right, #4f46e5 ${percent}%, #e2e8f0 ${percent}%)`,
+                    background: `linear-gradient(to right, #475569 ${percent}%, #e2e8f0 ${percent}%)`,
                   }}
                 />
               </div>

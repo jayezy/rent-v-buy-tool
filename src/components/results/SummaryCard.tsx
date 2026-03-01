@@ -17,16 +17,16 @@ export default function SummaryCard({ result }: SummaryCardProps) {
 
   return (
     <div className={`
-      rounded-3xl p-6 sm:p-8 border-2
+      glass-card rounded-3xl p-6 sm:p-8 border-2
       ${isBuy
-        ? 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200'
-        : 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200'
+        ? 'border-blue-200'
+        : 'border-emerald-200'
       }
     `}>
       <div className="flex items-start gap-4">
         <div className={`
           w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 text-2xl
-          ${isBuy ? 'bg-blue-100' : 'bg-emerald-100'}
+          ${isBuy ? 'bg-blue-50' : 'bg-emerald-50'}
         `}>
           {isBuy ? '🏠' : '📈'}
         </div>
@@ -72,7 +72,7 @@ function Stat({ label, value, accent }: { label: string; value: string; accent?:
   return (
     <div>
       <div className="text-xs text-slate-500 uppercase tracking-wider font-medium">{label}</div>
-      <div className={`text-lg font-bold mt-0.5 ${accent ? 'text-blue-700' : 'text-slate-800'}`}>
+      <div className={`text-lg font-bold mt-0.5 ${accent ? 'text-slate-900' : 'text-slate-700'}`}>
         {value}
       </div>
     </div>

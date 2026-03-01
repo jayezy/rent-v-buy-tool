@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useRef, type ReactNode } from 'react'
+import { useInView } from 'motion/react'
 
 interface ScrollRevealProps {
   children: ReactNode
@@ -8,11 +9,11 @@ interface ScrollRevealProps {
   threshold?: number
 }
 
-const directionClasses = {
-  up: { hidden: 'translate-y-8', visible: 'translate-y-0' },
-  down: { hidden: '-translate-y-8', visible: 'translate-y-0' },
-  left: { hidden: 'translate-x-8', visible: 'translate-x-0' },
-  right: { hidden: '-translate-x-8', visible: 'translate-x-0' },
+const directionStyles = {
+  up: { hidden: 'translateY(24px)', visible: 'translateY(0)' },
+  down: { hidden: 'translateY(-24px)', visible: 'translateY(0)' },
+  left: { hidden: 'translateX(24px)', visible: 'translateX(0)' },
+  right: { hidden: 'translateX(-24px)', visible: 'translateX(0)' },
 }
 
 export default function ScrollReveal({
@@ -23,35 +24,19 @@ export default function ScrollReveal({
   threshold = 0.15,
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const [isVisible, setIsVisible] = useState(false)
+  const isInView = useInView(ref, { once: true, amount: threshold })
 
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-          observer.disconnect()
-        }
-      },
-      { threshold, rootMargin: '0px 0px -40px 0px' },
-    )
-
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [threshold])
-
-  const dir = directionClasses[direction]
+  const dir = directionStyles[direction]
 
   return (
     <div
       ref={ref}
-      style={{ transitionDelay: `${delay}ms` }}
-      className={`transition-all duration-700 ease-out ${
-        isVisible ? `opacity-100 ${dir.visible}` : `opacity-0 ${dir.hidden}`
-      } ${className}`}
+      style={{
+        opacity: isInView ? 1 : 0,
+        transform: isInView ? dir.visible : dir.hidden,
+        transition: `opacity 0.7s ease-out ${delay}ms, transform 0.7s ease-out ${delay}ms`,
+      }}
+      className={className}
     >
       {children}
     </div>

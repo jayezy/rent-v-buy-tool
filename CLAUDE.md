@@ -1,6 +1,57 @@
 # CLAUDE.md — Project Intelligence
 
-This file captures patterns, decisions, and lessons learned during development of the HomeWise Rent vs. Buy Calculator. It serves as context for any future Claude sessions working on this codebase.
+## Workflow Orchestration
+
+### 1. Plan Node Default
+- Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
+- If something goes sideways, STOP and re-plan immediately - don't keep pushing
+- Use plan mode for verification steps, not just building
+- Write detailed specs upfront to reduce ambiguity
+
+### 2. Subagent Strategy
+- Use subagents liberally to keep main context window clean
+- Offload research, exploration, and parallel analysis to subagents
+- For complex problems, throw more compute at it via subagents
+- One tack per subagent for focused execution
+
+### 3. Self-Improvement Loop
+- After ANY correction from the user: update `tasks/lessons.md` with the pattern
+- Write rules for yourself that prevent the same mistake
+- Ruthlessly iterate on these lessons until mistake rate drops
+- Review lessons at session start for relevant project
+
+### 4. Verification Before Done
+- Never mark a task complete without proving it works
+- Diff behavior between main and your changes when relevant
+- Ask yourself: "Would a staff engineer approve this?"
+- Run tests, check logs, demonstrate correctness
+
+### 5. Demand Elegance (Balanced)
+- For non-trivial changes: pause and ask "is there a more elegant way?"
+- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
+- Skip this for simple, obvious fixes - don't over-engineer
+- Challenge your own work before presenting it
+
+### 6. Autonomous Bug Fixing
+- When given a bug report: just fix it. Don't ask for hand-holding
+- Point at logs, errors, failing tests - then resolve them
+- Zero context switching required from the user
+- Go fix failing CI tests without being told how
+
+## Task Management
+
+1. **Plan First**: Write plan to `tasks/todo.md` with checkable items
+2. **Verify Plan**: Check in before starting implementation
+3. **Track Progress**: Mark items complete as you go
+4. **Explain Changes**: High-level summary at each step
+5. **Document Results**: Add review section to `tasks/todo.md`
+6. **Capture Lessons**: Update `tasks/lessons.md` after corrections
+
+## Core Principles
+
+- **Simplicity First**: Make every change as simple as possible. Impact minimal code.
+- **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
+- **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
 
 ---
 
@@ -94,6 +145,33 @@ const rates = { ...DEFAULTS, ...overrides };
 - Configurable: direction, delay, threshold
 - Respects `prefers-reduced-motion` via CSS media query
 - Requires a global IO mock in tests (see Testing section)
+
+### Saved Results with localStorage
+
+Completed analyses are auto-saved to localStorage and displayed as "Previous Analyses" cards on the landing page.
+
+- **Type**: `SavedResult` in `types.ts` — contains `id`, `savedAt`, `label`, full `answers`, `result`, and `assumptionOverrides`
+- **Storage**: `src/lib/storage.ts` — pure utility functions: `loadSavedResults()`, `saveSavedResults()`, `generateResultLabel()`
+- **Storage key**: `homewise_results` in localStorage
+- **Auto-save**: Every completed wizard run auto-saves via `SET_ANSWER` on the last step. No manual "Save" button needed.
+- **Reducer actions**:
+  - `LOAD_SAVED_RESULT` — restores a saved analysis to the results view
+  - `DELETE_SAVED_RESULT` — removes a single saved result
+  - `CLEAR_ALL_SAVED` — removes all saved results
+- **RESET preserves savedResults** — clicking "Start Over" keeps the history intact
+- **Label format**: Auto-generated as `"$500K home · CA · 10yr"` from answers (zip code → state abbreviation)
+- **Landing page**: "Previous Analyses" section only renders when `savedResults.length > 0`
+
+### Zip Code Location + State-Level Data
+
+The location question uses a 5-digit zip code input instead of broad regional categories. This enables state-specific property tax and insurance rates.
+
+- **State data**: `src/lib/stateData.ts` — `STATE_DATA` record with all 50 states + DC, each with `propertyTaxRate` and `insuranceRate`
+- **Zip mapping**: `src/lib/zipToState.ts` — `ZIP_PREFIX_TO_STATE` maps 3-digit zip prefixes to state abbreviations using USPS prefix ranges
+- **Lookup**: `getLocationData(location)` in `stateData.ts` accepts zip codes, state abbreviations, or legacy region keys. Falls back to `NATIONAL_AVERAGE` for unrecognized inputs.
+- **Input**: `CustomValueInput.tsx` handles `type: 'zip'` with `inputMode="numeric"`, max 5 digits, shows state name hint on valid entry
+- **Backward compatibility**: Old saved results with legacy keys (e.g., `'westCoast'`) still work — `getLocationData()` returns national averages, `generateResultLabel()` maps them to readable names via `LEGACY_LOCATION_LABELS`
+- **Territories excluded**: Puerto Rico, Guam, and military APO/FPO codes return `null` from `zipToState()` — only 50 states + DC are valid
 
 ---
 

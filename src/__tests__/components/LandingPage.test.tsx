@@ -22,22 +22,21 @@ describe('LandingPage — hero section', () => {
     expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
   })
 
-  it('heading contains "buy or rent" text', () => {
+  it('heading contains "rent vs. buy" text', () => {
     renderLanding()
     const heading = screen.getByRole('heading', { level: 1 })
-    expect(heading.textContent).toMatch(/buy or rent/i)
+    expect(heading.textContent).toMatch(/rent vs\.? buy/i)
   })
 
   it('renders the primary CTA button', () => {
     renderLanding()
-    // There are two CTA buttons — both should have the survey label
-    const buttons = screen.getAllByRole('button', { name: /take the free survey/i })
+    const buttons = screen.getAllByRole('button', { name: /start analysis/i })
     expect(buttons.length).toBeGreaterThanOrEqual(1)
   })
 
-  it('renders the nav Take the Survey link', () => {
+  it('renders the nav Get Started link', () => {
     renderLanding()
-    expect(screen.getByRole('button', { name: /take the survey/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /get started/i })).toBeInTheDocument()
   })
 
   it('renders the brand name', () => {
@@ -69,19 +68,19 @@ describe('LandingPage — stat cards', () => {
 })
 
 describe('LandingPage — feature strip', () => {
-  it('shows Real Financial Math feature', () => {
+  it('shows Amortization & Tax Math feature', () => {
     renderLanding()
-    expect(screen.getByText('Real Financial Math')).toBeInTheDocument()
+    expect(screen.getByText('Amortization & Tax Math')).toBeInTheDocument()
   })
 
-  it('shows 10-Year Projections feature', () => {
+  it('shows Wealth Trajectory Modeling feature', () => {
     renderLanding()
-    expect(screen.getByText('10-Year Projections')).toBeInTheDocument()
+    expect(screen.getByText('Wealth Trajectory Modeling')).toBeInTheDocument()
   })
 
-  it('shows Editable Assumptions feature', () => {
+  it('shows Sensitivity Analysis feature', () => {
     renderLanding()
-    expect(screen.getByText('Editable Assumptions')).toBeInTheDocument()
+    expect(screen.getByText('Sensitivity Analysis')).toBeInTheDocument()
   })
 })
 
@@ -95,7 +94,7 @@ describe('LandingPage — navigation', () => {
         <App />
       </WizardProvider>
     )
-    const ctaButton = screen.getAllByRole('button', { name: /take the free survey/i })[0]
+    const ctaButton = screen.getAllByRole('button', { name: /start analysis/i })[0]
     await user.click(ctaButton)
     // After navigation, the wizard's first question should appear
     const { QUESTIONS } = await import('../../lib/constants')
@@ -110,7 +109,7 @@ describe('LandingPage — navigation', () => {
         <App />
       </WizardProvider>
     )
-    const navLink = screen.getByRole('button', { name: /take the survey/i })
+    const navLink = screen.getByRole('button', { name: /get started/i })
     await user.click(navLink)
     const { QUESTIONS } = await import('../../lib/constants')
     expect(await screen.findByText(QUESTIONS[0].title)).toBeInTheDocument()

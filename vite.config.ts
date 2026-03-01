@@ -13,6 +13,7 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     alias: {
       recharts: new URL('./src/__tests__/__mocks__/recharts.tsx', import.meta.url).pathname,
+      'motion/react': new URL('./src/__tests__/__mocks__/motion-react.tsx', import.meta.url).pathname,
     },
     coverage: {
       provider: 'v8',

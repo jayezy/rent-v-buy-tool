@@ -92,8 +92,15 @@ describe('Wizard flow — completing all steps', () => {
     const dialog = getDialog()
     for (let i = 0; i < QUESTIONS.length; i++) {
       await within(dialog).findByText(QUESTIONS[i].title)
-      const buttons = within(dialog).getAllByRole('button').filter(b => !b.getAttribute('aria-label'))
-      await user.click(buttons[0])
+      if (QUESTIONS[i].options.length === 0 && QUESTIONS[i].customInput?.type === 'zip') {
+        const input = within(dialog).getByLabelText(/zip code/i)
+        await user.type(input, '90210')
+        const submitBtn = within(dialog).getByRole('button', { name: /continue/i })
+        await user.click(submitBtn)
+      } else {
+        const buttons = within(dialog).getAllByRole('button').filter(b => !b.getAttribute('aria-label'))
+        await user.click(buttons[0])
+      }
     }
   }
 
@@ -159,8 +166,15 @@ describe('Results dashboard — chart rendering', () => {
     const dialog = getDialog()
     for (let i = 0; i < QUESTIONS.length; i++) {
       await within(dialog).findByText(QUESTIONS[i].title)
-      const buttons = within(dialog).getAllByRole('button').filter(b => !b.getAttribute('aria-label'))
-      await user.click(buttons[0])
+      if (QUESTIONS[i].options.length === 0 && QUESTIONS[i].customInput?.type === 'zip') {
+        const input = within(dialog).getByLabelText(/zip code/i)
+        await user.type(input, '90210')
+        const submitBtn = within(dialog).getByRole('button', { name: /continue/i })
+        await user.click(submitBtn)
+      } else {
+        const buttons = within(dialog).getAllByRole('button').filter(b => !b.getAttribute('aria-label'))
+        await user.click(buttons[0])
+      }
     }
     await screen.findByText('Your Results')
   }

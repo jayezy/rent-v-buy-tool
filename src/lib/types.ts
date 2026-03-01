@@ -8,7 +8,7 @@ export interface QuestionOption {
 
 /** Config for the freeform custom-value input shown below the option cards */
 export interface CustomInputConfig {
-  type: 'dollar' | 'percent' | 'years'
+  type: 'dollar' | 'percent' | 'years' | 'zip'
   label: string   // e.g. "Or enter an exact amount"
   min: number
   max: number
@@ -85,4 +85,14 @@ export interface ProjectionResult {
   monthlyMortgagePayment: number
   totalInterestPaid: number
   summary: string
+}
+
+/** A snapshot of a completed analysis, persisted to localStorage */
+export interface SavedResult {
+  id: string                                       // crypto.randomUUID()
+  savedAt: number                                  // Date.now() timestamp
+  label: string                                    // e.g. "$500K home · West Coast · 10yr"
+  answers: WizardAnswers                           // Full user inputs
+  result: ProjectionResult                         // Full projection output
+  assumptionOverrides: Partial<AssumptionOverrides> // Any custom rate tweaks
 }

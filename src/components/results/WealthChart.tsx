@@ -38,7 +38,7 @@ function CustomTooltip({ active, payload, label }: any) {
 
 export default function WealthChart({ projections }: WealthChartProps) {
   return (
-    <div className="bg-white rounded-3xl border border-slate-200 p-4 sm:p-6">
+    <div className="glass-card rounded-3xl p-4 sm:p-6">
       <h3 className="text-lg font-bold text-slate-800 mb-1">Net Wealth Comparison</h3>
       <p className="text-sm text-slate-500 mb-4">
         Home equity (minus selling costs) vs. investment portfolio

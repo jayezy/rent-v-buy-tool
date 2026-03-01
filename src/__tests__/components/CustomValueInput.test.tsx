@@ -159,3 +159,121 @@ describe('CustomValueInput — validation', () => {
     expect(button).not.toBeDisabled()
   })
 })
+
+// ─── Zip code type ──────────────────────────────────────────────────────────────
+const ZIP_CONFIG: CustomInputConfig = {
+  type: 'zip',
+  label: 'Enter a 5-digit zip code',
+  min: 0,
+  max: 99999,
+}
+
+describe('CustomValueInput — zip code rendering', () => {
+  it('renders a text input (not number) when type is zip', () => {
+    render(<CustomValueInput config={ZIP_CONFIG} onSubmit={() => {}} />)
+    const input = screen.getByLabelText(/zip code/i)
+    expect(input).toBeInTheDocument()
+    expect(input.getAttribute('type')).toBe('text')
+  })
+
+  it('shows placeholder "e.g. 90210"', () => {
+    render(<CustomValueInput config={ZIP_CONFIG} onSubmit={() => {}} />)
+    const input = screen.getByLabelText(/zip code/i)
+    expect(input.getAttribute('placeholder')).toBe('e.g. 90210')
+  })
+
+  it('shows "Continue" button instead of "Use this"', () => {
+    render(<CustomValueInput config={ZIP_CONFIG} onSubmit={() => {}} />)
+    expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /use this/i })).not.toBeInTheDocument()
+  })
+
+  it('button is disabled when input is empty', () => {
+    render(<CustomValueInput config={ZIP_CONFIG} onSubmit={() => {}} />)
+    expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled()
+  })
+})
+
+describe('CustomValueInput — zip code state hint', () => {
+  it('shows state name hint when valid 5-digit zip is entered', async () => {
+    const user = userEvent.setup()
+    render(<CustomValueInput config={ZIP_CONFIG} onSubmit={() => {}} />)
+    const input = screen.getByLabelText(/zip code/i)
+    await user.type(input, '90210')
+    expect(screen.getByText('California')).toBeInTheDocument()
+  })
+
+  it('does not show state hint for partial zip', async () => {
+    const user = userEvent.setup()
+    render(<CustomValueInput config={ZIP_CONFIG} onSubmit={() => {}} />)
+    const input = screen.getByLabelText(/zip code/i)
+    await user.type(input, '9021')
+    expect(screen.queryByText('California')).not.toBeInTheDocument()
+  })
+})
+
+describe('CustomValueInput — zip code submission', () => {
+  it('calls onSubmit with the zip code string when valid', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn()
+    render(<CustomValueInput config={ZIP_CONFIG} onSubmit={onSubmit} />)
+    const input = screen.getByLabelText(/zip code/i)
+    await user.type(input, '90210')
+    await user.click(screen.getByRole('button', { name: /continue/i }))
+    expect(onSubmit).toHaveBeenCalledWith('90210')
+  })
+
+  it('calls onSubmit with zip code string on Enter key', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn()
+    render(<CustomValueInput config={ZIP_CONFIG} onSubmit={onSubmit} />)
+    const input = screen.getByLabelText(/zip code/i)
+    await user.type(input, '10001')
+    await user.keyboard('{Enter}')
+    expect(onSubmit).toHaveBeenCalledWith('10001')
+  })
+
+  it('clears the input after successful submission', async () => {
+    const user = userEvent.setup()
+    render(<CustomValueInput config={ZIP_CONFIG} onSubmit={() => {}} />)
+    const input = screen.getByLabelText(/zip code/i) as HTMLInputElement
+    await user.type(input, '90210')
+    await user.click(screen.getByRole('button', { name: /continue/i }))
+    expect(input.value).toBe('')
+  })
+})
+
+describe('CustomValueInput — zip code validation', () => {
+  it('shows error for incomplete zip code', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn()
+    render(<CustomValueInput config={ZIP_CONFIG} onSubmit={onSubmit} />)
+    const input = screen.getByLabelText(/zip code/i)
+    await user.type(input, '123')
+    await user.keyboard('{Enter}')
+    expect(screen.getByRole('alert')).toBeInTheDocument()
+    expect(screen.getByRole('alert').textContent).toMatch(/5-digit/i)
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
+
+  it('shows error for unrecognized zip code', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn()
+    render(<CustomValueInput config={ZIP_CONFIG} onSubmit={onSubmit} />)
+    const input = screen.getByLabelText(/zip code/i)
+    await user.type(input, '00000')
+    await user.keyboard('{Enter}')
+    expect(screen.getByRole('alert')).toBeInTheDocument()
+    expect(screen.getByRole('alert').textContent).toMatch(/not a recognized/i)
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
+
+  it('only allows digits in zip input', async () => {
+    const user = userEvent.setup()
+    render(<CustomValueInput config={ZIP_CONFIG} onSubmit={() => {}} />)
+    const input = screen.getByLabelText(/zip code/i) as HTMLInputElement
+    await user.type(input, 'abc12xyz34')
+    // Only digits should remain, max 5 chars
+    expect(input.value).toBe('1234')
+  })
+})
