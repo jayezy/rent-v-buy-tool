@@ -83,12 +83,12 @@ export default function CustomValueInput({ config, onSubmit }: CustomValueInputP
   }
 
   return (
-    <div className={isZip ? '' : 'mt-6 pt-6 border-t border-slate-200'}>
-      <p className="text-sm font-medium text-slate-500 mb-3">{config.label}</p>
+    <div className={isZip ? '' : 'mt-6 pt-6 border-t border-slate-200 dark:border-slate-700'}>
+      <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-3">{config.label}</p>
       <div className="flex gap-3 items-start">
         <div className="relative flex-1">
           {prefix && (
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium pointer-events-none">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-medium pointer-events-none">
               {prefix}
             </span>
           )}
@@ -103,11 +103,11 @@ export default function CustomValueInput({ config, onSubmit }: CustomValueInputP
               onChange={e => handleZipChange(e.target.value)}
               onKeyDown={handleKey}
               placeholder="e.g. 90210"
-              className={`w-full rounded-xl border py-3 px-4 text-slate-800 font-medium
+              className={`w-full rounded-xl border py-3 px-4 text-slate-800 dark:text-slate-200 font-medium
                 focus:outline-none focus:ring-2 transition-all text-lg tracking-widest
                 ${error
-                  ? 'border-red-300 focus:ring-red-300 bg-red-50'
-                  : 'border-slate-300 focus:ring-slate-400 bg-white'
+                  ? 'border-red-300 dark:border-red-700 focus:ring-red-300 dark:focus:ring-red-700 bg-red-50 dark:bg-red-950'
+                  : 'border-slate-300 dark:border-slate-600 focus:ring-slate-400 dark:focus:ring-slate-500 bg-white dark:bg-slate-800'
                 }`}
             />
           ) : (
@@ -131,17 +131,17 @@ export default function CustomValueInput({ config, onSubmit }: CustomValueInputP
                     ? '0.0'
                     : '0'
               }
-              className={`w-full rounded-xl border py-3 text-slate-800 font-medium
+              className={`w-full rounded-xl border py-3 text-slate-800 dark:text-slate-200 font-medium
                 focus:outline-none focus:ring-2 transition-all
                 ${prefix ? 'pl-8 pr-4' : suffix ? 'pl-4 pr-12' : 'px-4'}
                 ${error
-                  ? 'border-red-300 focus:ring-red-300 bg-red-50'
-                  : 'border-slate-300 focus:ring-slate-400 bg-white'
+                  ? 'border-red-300 dark:border-red-700 focus:ring-red-300 dark:focus:ring-red-700 bg-red-50 dark:bg-red-950'
+                  : 'border-slate-300 dark:border-slate-600 focus:ring-slate-400 dark:focus:ring-slate-500 bg-white dark:bg-slate-800'
                 }`}
             />
           )}
           {suffix && (
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium pointer-events-none">
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-medium pointer-events-none">
               {suffix}
             </span>
           )}
@@ -149,20 +149,20 @@ export default function CustomValueInput({ config, onSubmit }: CustomValueInputP
         <button
           onClick={handleSubmit}
           disabled={raw.trim() === ''}
-          className="px-5 py-3 bg-slate-800 hover:bg-slate-900 disabled:bg-slate-200
-            disabled:text-slate-400 text-white font-semibold rounded-xl transition-colors cursor-pointer
+          className="px-5 py-3 bg-slate-800 hover:bg-slate-900 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 disabled:bg-slate-200 dark:disabled:bg-slate-700
+            disabled:text-slate-400 dark:disabled:text-slate-500 text-white font-semibold rounded-xl transition-colors cursor-pointer
             disabled:cursor-not-allowed shrink-0"
         >
           {isZip ? 'Continue' : 'Use this'}
         </button>
       </div>
       {stateHint && !error && (
-        <p className="mt-2 text-sm text-emerald-600 font-medium">
+        <p className="mt-2 text-sm text-emerald-600 dark:text-emerald-400 font-medium">
           {stateHint}
         </p>
       )}
       {error && (
-        <p role="alert" className="mt-2 text-sm text-red-500">
+        <p role="alert" className="mt-2 text-sm text-red-500 dark:text-red-400">
           {error}
         </p>
       )}

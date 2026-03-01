@@ -48,30 +48,30 @@ export default function WizardModal() {
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-slate-900/30 backdrop-blur-sm"
+        className="absolute inset-0 bg-slate-900/30 dark:bg-black/50 backdrop-blur-sm"
         onClick={close}
       />
 
       {/* Modal card */}
       <motion.div
         className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto
-          bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl shadow-slate-900/10
-          border border-white/50"
+          bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-3xl shadow-2xl shadow-slate-900/10 dark:shadow-black/30
+          border border-white/50 dark:border-slate-700/50"
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md rounded-t-3xl border-b border-slate-100 px-6 py-4">
+        <div className="sticky top-0 z-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-t-3xl border-b border-slate-100 dark:border-slate-700 px-6 py-4">
           <div className="flex items-center gap-4">
             {state.currentStep > 0 && (
               <button
                 onClick={() => dispatch({ type: 'GO_BACK' })}
-                className="p-2 -ml-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
+                className="p-2 -ml-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 aria-label="Go back"
               >
-                <svg className="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="w-5 h-5 text-slate-600 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
@@ -81,10 +81,10 @@ export default function WizardModal() {
             </div>
             <button
               onClick={close}
-              className="p-2 -mr-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
+              className="p-2 -mr-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               aria-label="Close survey"
             >
-              <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-5 h-5 text-slate-400 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>

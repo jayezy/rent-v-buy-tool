@@ -16,10 +16,10 @@ export default function QuestionStep({ question, selectedValue, onSelect }: Ques
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: 'easeOut' }}
     >
-      <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
+      <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2">
         {question.title}
       </h2>
-      <p className="text-slate-500 mb-8 text-base sm:text-lg">
+      <p className="text-slate-500 dark:text-slate-400 mb-8 text-base sm:text-lg">
         {question.subtitle}
       </p>
       {question.options.length > 0 && (

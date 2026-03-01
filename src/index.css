@@ -1,25 +1,143 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
+@custom-variant dark (&:is(.dark *));
+
+/* ── shadcn/ui design tokens (light) ── */
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.129 0.042 264.695);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.129 0.042 264.695);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.129 0.042 264.695);
+  --primary: oklch(0.208 0.042 265.755);
+  --primary-foreground: oklch(0.984 0.003 247.858);
+  --secondary: oklch(0.968 0.007 247.896);
+  --secondary-foreground: oklch(0.208 0.042 265.755);
+  --muted: oklch(0.968 0.007 247.896);
+  --muted-foreground: oklch(0.554 0.046 257.417);
+  --accent: oklch(0.968 0.007 247.896);
+  --accent-foreground: oklch(0.208 0.042 265.755);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.929 0.013 255.508);
+  --input: oklch(0.929 0.013 255.508);
+  --ring: oklch(0.704 0.04 256.788);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+
+  /* Chart / slider custom properties */
+  --color-chart-rent: #ef4444;
+  --color-chart-buy: #2563eb;
+  --color-chart-renter: #10b981;
+  --color-chart-grid: #e2e8f0;
+  --color-chart-tick: #94a3b8;
+  --color-tooltip-bg: #ffffff;
+  --color-tooltip-border: #e2e8f0;
+  --color-slider-fill: #475569;
+  --color-slider-track: #e2e8f0;
+}
+
+/* ── shadcn/ui design tokens (dark) ── */
+.dark {
+  --background: oklch(0.129 0.042 264.695);
+  --foreground: oklch(0.984 0.003 247.858);
+  --card: oklch(0.17 0.04 264.695);
+  --card-foreground: oklch(0.984 0.003 247.858);
+  --popover: oklch(0.17 0.04 264.695);
+  --popover-foreground: oklch(0.984 0.003 247.858);
+  --primary: oklch(0.984 0.003 247.858);
+  --primary-foreground: oklch(0.208 0.042 265.755);
+  --secondary: oklch(0.227 0.034 265.048);
+  --secondary-foreground: oklch(0.984 0.003 247.858);
+  --muted: oklch(0.227 0.034 265.048);
+  --muted-foreground: oklch(0.704 0.04 256.788);
+  --accent: oklch(0.227 0.034 265.048);
+  --accent-foreground: oklch(0.984 0.003 247.858);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.278 0.033 256.848);
+  --input: oklch(0.278 0.033 256.848);
+  --ring: oklch(0.554 0.046 257.417);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+
+  /* Chart / slider custom properties (dark) */
+  --color-chart-rent: #f87171;
+  --color-chart-buy: #60a5fa;
+  --color-chart-renter: #34d399;
+  --color-chart-grid: #334155;
+  --color-chart-tick: #94a3b8;
+  --color-tooltip-bg: #1e293b;
+  --color-tooltip-border: #334155;
+  --color-slider-fill: #94a3b8;
+  --color-slider-track: #334155;
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+}
+
+/* ── Project custom tokens ── */
 @theme {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --color-primary: #475569;
-  --color-primary-light: #64748b;
-  --color-primary-dark: #334155;
   --color-rent: #64748b;
   --color-rent-light: #cbd5e1;
   --color-buy: #475569;
   --color-buy-light: #e2e8f0;
   --color-success: #34d399;
   --color-warning: #fbbf24;
+  --animate-fade-in: fade-in 0.4s ease-out;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-@theme {
-  --animate-fade-in: fade-in 0.4s ease-out;
-}
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
 @keyframes fade-in {
   from {
@@ -45,11 +163,6 @@ html {
   25% { transform: translate(-40px, 30px) scale(1.05); }
   50% { transform: translate(30px, -20px) scale(1.1); }
   75% { transform: translate(-20px, -40px) scale(0.95); }
-}
-
-@keyframes scroll-bounce {
-  0%, 100% { transform: translateY(0); opacity: 0.5; }
-  50% { transform: translateY(8px); opacity: 1; }
 }
 
 .blob {
@@ -78,6 +191,26 @@ html {
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Dark mode overrides for global styles ── */
+html.dark body {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0f172a 100%);
+}
+
+html.dark .glass {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: rgba(51, 65, 85, 0.35);
+}
+
+html.dark .glass-card {
+  background: rgba(15, 23, 42, 0.45);
+  border-color: rgba(51, 65, 85, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+html.dark .blob {
+  opacity: 0.1;
 }
 
 @media (prefers-reduced-motion: reduce) {

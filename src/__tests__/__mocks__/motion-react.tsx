@@ -10,6 +10,7 @@ const MOTION_PROPS = new Set([
   'whileHover', 'whileTap', 'whileFocus', 'whileDrag', 'whileInView',
   'viewport', 'layout', 'layoutId', 'onAnimationStart', 'onAnimationComplete',
   'onUpdate', 'dragConstraints', 'dragElastic', 'drag',
+  'onDragEnd', 'onDragStart', 'dragSnapToOrigin',
 ])
 
 function stripMotionProps(props: Record<string, unknown>) {
